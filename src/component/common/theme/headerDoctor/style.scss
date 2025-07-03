@@ -1,0 +1,24 @@
+.doctor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #282c34;
+    color: white;
+  
+    .logout-btn {
+      background-color: #ff4d4f;
+      border: none;
+      padding: 0.5rem 1rem;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+  
+      &:hover {
+        background-color: #d9363e;
+      }
+    }
+  }
+  
