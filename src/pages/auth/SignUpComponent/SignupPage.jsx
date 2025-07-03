@@ -1,36 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./SignupPage.scss";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "../../../utils/router";
+import {
+  registerUserService,
+  registerDoctorService,
+  confirmRegisterService,
+} from "../../../services/authService";
+import { toast } from "react-toastify";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    phone: "",
+    role: "User",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState("");
+  const [showOtpVerification, setShowOtpVerification] = useState(false);
+  const [otpValues, setOtpValues] = useState(Array(6).fill(""));
+  const [otpError, setOtpError] = useState("");
+  const otpInputRefs = useRef([]);
+
   const navigate = useNavigate();
+
+  // Initialize refs for OTP inputs
+  useEffect(() => {
+    otpInputRefs.current = otpInputRefs.current.slice(0, 6);
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
         [name]: "",
       }));
     }
-
-    // Check password strength
     if (name === "password") {
       checkPasswordStrength(value);
     }
@@ -55,61 +70,236 @@ const SignupPage = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
     if (!formData.name.trim()) {
       newErrors.name = "Vui lòng nhập họ tên";
     }
-
     if (!formData.email.trim()) {
       newErrors.email = "Vui lòng nhập email";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email không hợp lệ";
     }
-
     if (!formData.password) {
       newErrors.password = "Vui lòng nhập mật khẩu";
     } else if (formData.password.length < 6) {
       newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
     }
-
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Vui lòng nhập số điện thoại";
+    } else if (!/^[0-9]{9,11}$/.test(formData.phone.trim())) {
+      newErrors.phone = "Số điện thoại không hợp lệ";
+    }
     if (!acceptTerms) {
       newErrors.terms = "Vui lòng đồng ý với điều khoản";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
-
     setIsLoading(true);
-
+    const data = {
+      email: formData.email,
+      password: formData.password,
+      fullName: formData.name,
+      phoneNumber: formData.phone,
+    };
     try {
-      // TODO: Replace with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Registration successful:", formData);
-      // Handle successful registration
+      let result;
+      if (formData.role === "Doctor") {
+        result = await registerDoctorService(data);
+      } else {
+        result = await registerUserService(data);
+      }
+      if (result.success) {
+        // Instead of redirecting to login, show OTP verification
+        setShowOtpVerification(true);
+      } else {
+        toast.success(result.message || "Đăng ký thất bại!");
+      }
     } catch (error) {
       console.error("Registration error:", error);
-      // Handle registration error
+      toast.error("Đã xảy ra lỗi, vui lòng thử lại.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    console.log(`Login with ${provider}`);
-    // Handle social login
+  const handleOtpChange = (index, value) => {
+    // Only allow numbers
+    if (value && !/^\d*$/.test(value)) return;
+
+    const newOtpValues = [...otpValues];
+    newOtpValues[index] = value;
+    setOtpValues(newOtpValues);
+
+    // Clear error when typing
+    if (otpError) setOtpError("");
+
+    // Auto focus to next input
+    if (value && index < 5) {
+      otpInputRefs.current[index + 1].focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    // Handle backspace
+    if (e.key === "Backspace") {
+      if (!otpValues[index] && index > 0) {
+        otpInputRefs.current[index - 1].focus();
+      }
+    }
+  };
+
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").trim();
+
+    // Check if pasted content is numeric and has correct length
+    if (/^\d+$/.test(pastedData)) {
+      const digits = pastedData.split("").slice(0, 6);
+      const newOtpValues = [...otpValues];
+
+      digits.forEach((digit, index) => {
+        if (index < 6) {
+          newOtpValues[index] = digit;
+        }
+      });
+
+      setOtpValues(newOtpValues);
+
+      // Focus on the next empty field or the last field
+      const nextEmptyIndex = newOtpValues.findIndex((val) => !val);
+      if (nextEmptyIndex !== -1 && nextEmptyIndex < 6) {
+        otpInputRefs.current[nextEmptyIndex].focus();
+      } else if (digits.length < 6) {
+        otpInputRefs.current[digits.length].focus();
+      } else {
+        otpInputRefs.current[5].focus();
+      }
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    const otpCode = otpValues.join("");
+
+    if (otpCode.length !== 6) {
+      setOtpError("Vui lòng nhập đủ 6 số");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await confirmRegisterService({
+        email: formData.email,
+        code: otpCode,
+      });
+
+      if (result.success) {
+        toast.success(result.message || "Xác thực thành công!");
+        navigate(ROUTER.LOGIN);
+      } else {
+        toast.error(result.message || "Mã xác thực không chính xác");
+      }
+    } catch (error) {
+      console.error("OTP verification error:", error);
+      toast.error("Đã xảy ra lỗi khi xác thực");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setIsLoading(true);
+    try {
+      let result;
+      const data = {
+        email: formData.email,
+        password: formData.password,
+        fullName: formData.name,
+        phoneNumber: formData.phone,
+      };
+
+      if (formData.role === "Doctor") {
+        result = await registerDoctorService(data);
+      } else {
+        result = await registerUserService(data);
+      }
+
+      if (result.success) {
+        toast.success("Mã xác thực đã được gửi lại!");
+      } else {
+        toast.error(result.message || "Không thể gửi lại mã xác thực!");
+      }
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+      toast.error("Đã xảy ra lỗi khi gửi lại mã xác thực");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleLoginRedirect = () => {
-    console.log("Redirect to login");
-    // Handle redirect to login page
     navigate(ROUTER.LOGIN);
   };
+
+  if (showOtpVerification) {
+    return (
+      <div className="signup-container">
+        <div className="signup-form">
+          <h2>Xác thực tài khoản</h2>
+          <p className="description">
+            Vui lòng nhập mã xác thực 6 số đã được gửi đến email{" "}
+            {formData.email}
+          </p>
+
+          <div className="otp-container">
+            {Array(6)
+              .fill(0)
+              .map((_, index) => (
+                <input
+                  key={index}
+                  ref={(el) => (otpInputRefs.current[index] = el)}
+                  type="text"
+                  maxLength={1}
+                  value={otpValues[index]}
+                  onChange={(e) => handleOtpChange(index, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                  onPaste={index === 0 ? handleOtpPaste : undefined}
+                  className="otp-input"
+                  disabled={isLoading}
+                />
+              ))}
+          </div>
+
+          {otpError && <div className="input-error otp-error">{otpError}</div>}
+
+          <button
+            type="button"
+            className={`submit-button ${isLoading ? "loading" : ""}`}
+            onClick={handleVerifyOtp}
+            disabled={isLoading}
+          >
+            {isLoading ? "Đang xử lý..." : "Xác nhận"}
+          </button>
+
+          <div className="resend-otp">
+            Không nhận được mã?{" "}
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={isLoading}
+              className="resend-button"
+            >
+              Gửi lại
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="signup-container">
@@ -118,7 +308,6 @@ const SignupPage = () => {
         <p className="description">
           Tạo tài khoản mới để bắt đầu sử dụng dịch vụ của chúng tôi
         </p>
-
         <form onSubmit={handleSubmit}>
           <div className={`input-group ${errors.name ? "error" : ""}`}>
             <input
@@ -131,7 +320,6 @@ const SignupPage = () => {
             />
             {errors.name && <div className="input-error">{errors.name}</div>}
           </div>
-
           <div className={`input-group ${errors.email ? "error" : ""}`}>
             <input
               type="email"
@@ -143,7 +331,17 @@ const SignupPage = () => {
             />
             {errors.email && <div className="input-error">{errors.email}</div>}
           </div>
-
+          <div className={`input-group ${errors.phone ? "error" : ""}`}>
+            <input
+              type="text"
+              name="phone"
+              placeholder="Số điện thoại"
+              value={formData.phone}
+              onChange={handleChange}
+              disabled={isLoading}
+            />
+            {errors.phone && <div className="input-error">{errors.phone}</div>}
+          </div>
           <div
             className={`input-group password-group ${
               errors.password ? "error" : ""
@@ -163,33 +361,12 @@ const SignupPage = () => {
               onClick={togglePasswordVisibility}
               aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
             >
-              {showPassword ? (
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                  <line x1="1" y1="1" x2="23" y2="23" />
-                </svg>
-              ) : (
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              )}
+              {showPassword ? "👁️‍🗨️" : "👁️"}
             </button>
             {errors.password && (
               <div className="input-error">{errors.password}</div>
             )}
           </div>
-
           {formData.password && (
             <div className="password-strength">
               <div className="strength-label">Độ mạnh mật khẩu:</div>
@@ -203,7 +380,17 @@ const SignupPage = () => {
               </div>
             </div>
           )}
-
+          <div className="input-group">
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              disabled={isLoading}
+            >
+              <option value="User">Người dùng</option>
+              <option value="Doctor">Bác sĩ</option>
+            </select>
+          </div>
           <div className="terms-checkbox">
             <input
               type="checkbox"
@@ -224,16 +411,14 @@ const SignupPage = () => {
               {errors.terms}
             </div>
           )}
-
           <button
             type="submit"
             className={`submit-button ${isLoading ? "loading" : ""}`}
             disabled={isLoading}
           >
-            {isLoading ? "" : "Đăng ký"}
+            {isLoading ? "Đang xử lý..." : "Đăng ký"}
           </button>
         </form>
-
         <div className="login-link">
           Đã có tài khoản?
           <a href="#login" onClick={handleLoginRedirect}>
