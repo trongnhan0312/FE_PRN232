@@ -55,9 +55,9 @@ const LoginPage = () => {
         if (role === "admin") {
           navigate(ROUTER.ADMIN);
         } else if (role === "doctor") {
-          navigate(ROUTER.DOCTOR);
+          navigate(ROUTER.DOCTOR.HOME);
         } else {
-          navigate(ROUTER.HOME);
+          navigate(ROUTER.USER.HOME);
         }
       } else {
         toast.error(response.message || "Sai tài khoản hoặc mật khẩu");

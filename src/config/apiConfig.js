@@ -25,5 +25,11 @@ export const API_ENDPOINT = {
     DASHBOARD: `${API_BASE_URL}/doctor/dashboard`,
   },
 
-  // Thêm các nhóm API khác ở đây nếu cần
+  BLOGPOST: {
+    CREATE: `${API_BASE_URL}/blogpost/create`,
+    ALL: `${API_BASE_URL}/blogpost/all`, // lấy tất cả bài viết
+    UPDATE: `${API_BASE_URL}/blogpost/update/{id}`,
+    DELETE: `${API_BASE_URL}/blogpost/delete/{id}`,
+    DETAIL: `${API_BASE_URL}/blogpost/{id}`,
+  },
 };

@@ -1,11 +1,13 @@
 import { memo } from "react";
 import Header from "../header";
 import Footer from "../footer";
-
-const masterLayout = ({ children }) => (
+import { Outlet } from "react-router-dom";
+const masterLayout = () => (
   <div>
     <Header />
-    {children}
+    <main>
+      <Outlet />
+    </main>
     <Footer />
   </div>
 );

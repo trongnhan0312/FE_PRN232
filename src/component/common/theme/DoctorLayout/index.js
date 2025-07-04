@@ -1,11 +1,14 @@
 import { memo } from "react";
 import HeaderDoctor from "../headerDoctor";
 import FooterDoctor from "../footerDoctor";
+import { Outlet } from "react-router-dom";
 
-const DoctorLayout = ({ children }) => (
+const DoctorLayout = () => (
   <div>
     <HeaderDoctor />
-    {children}
+    <main>
+      <Outlet />
+    </main>
     <FooterDoctor />
   </div>
 );
