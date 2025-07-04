@@ -1,24 +1,110 @@
 .doctor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: linear-gradient(90deg, #3b82f6, #1e40af);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 100;
+
+  .logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, text-shadow 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+  }
+
+  .menu {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #282c34;
-    color: white;
-  
-    .logout-btn {
-      background-color: #ff4d4f;
+    gap: 1rem;
+
+    button {
+      background: transparent;
       border: none;
-      padding: 0.5rem 1rem;
       color: white;
+      font-size: 0.95rem;
       cursor: pointer;
-      border-radius: 5px;
-      font-size: 0.9rem;
-      transition: background-color 0.3s;
-  
+      padding: 0.3rem 0.6rem;
+      position: relative;
+      border-radius: 4px;
+      transition: color 0.3s ease;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: white;
+        transition: width 0.3s ease;
+      }
+
       &:hover {
-        background-color: #d9363e;
+        color: #ffe082;
+
+        &::after {
+          width: 100%;
+        }
       }
     }
   }
-  
+
+  .account {
+    position: relative;
+    cursor: pointer;
+    font-weight: 500;
+    transition: text-shadow 0.3s ease;
+
+    &:hover {
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    }
+
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 120%;
+      background: white;
+      color: #333;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      z-index: 10;
+      animation: fadeIn 0.2s ease forwards;
+
+      button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.6rem 1rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #f0f4f8;
+        }
+      }
+    }
+  }
+}
+
+// thêm animation fade-in cho dropdown
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

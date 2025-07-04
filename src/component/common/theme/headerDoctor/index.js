@@ -1,24 +1,65 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { clearToken } from "../../../../utils/auth";
 import "./style.scss";
 
-const HeaderDoctror = () => {
+const HeaderDoctor = ({ username = "Doctor123" }) => {
   const navigate = useNavigate();
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
 
   const handleLogout = () => {
-    clearToken(); // Xóa token trong cookies
-    navigate("/login"); // Chuyển hướng về trang login
+    clearToken();
+    navigate("/login");
+  };
+
+  const handleNavigate = (path) => {
+    navigate(path);
   };
 
   return (
     <header className="doctor-header">
-      <h1>Doctor</h1>
-      <button className="logout-btn" onClick={handleLogout}>
-        Đăng xuất
-      </button>
+      <div className="logo" onClick={() => handleNavigate("/")}>
+        🩺 Doctor Panel
+      </div>
+
+      <nav className="menu">
+        <button onClick={() => handleNavigate("/doctor/blog")}>
+          Blog Post
+        </button>
+        <button onClick={() => handleNavigate("/blood-group")}>
+          Blood Group
+        </button>
+        <button onClick={() => handleNavigate("/compatibility")}>
+          Blood Compatibility
+        </button>
+        <button onClick={() => handleNavigate("/blood-unit")}>
+          Blood Unit
+        </button>
+        <button onClick={() => handleNavigate("/donation")}>Donation</button>
+        <button onClick={() => handleNavigate("/donor-available")}>
+          Donor Available
+        </button>
+        <button onClick={() => handleNavigate("/request")}>
+          Blood Request
+        </button>
+      </nav>
+
+      <div
+        className="account"
+        onClick={() => setShowAccountMenu(!showAccountMenu)}
+      >
+        👤 {username}
+        {showAccountMenu && (
+          <div className="account-menu">
+            <button onClick={() => handleNavigate("/profile")}>
+              Thông tin
+            </button>
+            <button onClick={handleLogout}>Đăng xuất</button>
+          </div>
+        )}
+      </div>
     </header>
   );
 };
 
-export default HeaderDoctror;
+export default HeaderDoctor;

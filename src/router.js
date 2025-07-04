@@ -13,7 +13,10 @@ import ForgotPasswordPage from "./pages/auth/ForgetPassword/ForgotPassword";
 import ResetPassword from "./pages/auth/ForgetPassword/ResetPassword/ResetPassword";
 
 import HomePage from "./pages/users/homePage";
-import DoctorHomePage from "./pages/doctor/homePage";
+import DoctorHomePage from "./pages/doctor/DoctorhomePage";
+import DoctorBlogPost from "./pages/doctor/BlogPost/";
+import BlogDetail from "./pages/doctor/BlogPost/BlogDetail";
+
 const RouterCustom = () => {
   const location = useLocation();
   const key =
@@ -42,9 +45,9 @@ const RouterCustom = () => {
             isAdmin ? (
               <Navigate to={ROUTER.ADMIN} replace />
             ) : isDoctor ? (
-              <Navigate to={ROUTER.DOCTOR} replace />
+              <Navigate to={ROUTER.DOCTOR.HOME} replace />
             ) : (
-              <Navigate to={ROUTER.HOME} replace />
+              <Navigate to={ROUTER.USER.HOME} replace />
             )
           ) : (
             <Navigate to={ROUTER.LOGIN} replace />
@@ -54,7 +57,7 @@ const RouterCustom = () => {
 
       {/* Doctor Layout */}
       <Route
-        path={ROUTER.DOCTOR}
+        path={ROUTER.DOCTOR.HOME}
         element={
           isLoggedIn && isDoctor ? (
             <DoctorLayout />
@@ -64,16 +67,20 @@ const RouterCustom = () => {
         }
       >
         <Route index element={<DoctorHomePage />} />
+        <Route path="blog" element={<DoctorBlogPost />} />
+        <Route path="blog/:id" element={<BlogDetail />} />
       </Route>
 
       {/* User Layout */}
       <Route
-        path="/"
+        path={ROUTER.USER.HOME}
         element={
           isLoggedIn ? <MasterLayout /> : <Navigate to={ROUTER.LOGIN} replace />
         }
       >
-        <Route path={ROUTER.HOME} element={<HomePage />} />
+        <Route index element={<HomePage />} />
+
+        {/* thêm route con tùy ý */}
       </Route>
 
       {/* Catch-all */}
