@@ -27,9 +27,26 @@ export const API_ENDPOINT = {
 
   BLOGPOST: {
     CREATE: `${API_BASE_URL}/blogpost/create`,
-    ALL: `${API_BASE_URL}/blogpost/all`, // lấy tất cả bài viết
+    ALL: `${API_BASE_URL}/blogpost/all`,
     UPDATE: `${API_BASE_URL}/blogpost/update/{id}`,
     DELETE: `${API_BASE_URL}/blogpost/delete/{id}`,
     DETAIL: `${API_BASE_URL}/blogpost/{id}`,
+  },
+  BLOOD_GROUP: {
+    ALL: `${API_BASE_URL}/bloodgroup/all`,
+  },
+  BLOOD_COMPATIBILITY: {
+    ALL: `${API_BASE_URL}/bloodcompatibility/all`,
+  },
+  BLOOD_UNIT: {
+    ALL: `${API_BASE_URL}/bloodunit/all`,
+    CREATE: `${API_BASE_URL}/bloodunit/create`,
+    UPDATE: `${API_BASE_URL}/bloodunit/update/{id}`,
+    DELETE: `${API_BASE_URL}/bloodunit/delete/{id}`,
+    DETAIL: `${API_BASE_URL}/bloodunit/{id}`,
+  },
+  EMPLOYEE: {
+    DETAIL: `${API_BASE_URL}/employee/{id}`,
+    UPDATE: `${API_BASE_URL}/employee/update-doctor-profile`,
   },
 };

@@ -1,7 +1,10 @@
 import React from "react";
 import "./DoctorHomePage.scss";
 
-const DoctorHomePage = ({ doctorName = "Dr. John Doe" }) => {
+const DoctorHomePage = () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const doctorName = user.fullName || user.email || "Doctor";
+
   return (
     <div className="doctor-home">
       <h1>

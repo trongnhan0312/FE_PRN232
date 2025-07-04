@@ -16,7 +16,10 @@ import HomePage from "./pages/users/homePage";
 import DoctorHomePage from "./pages/doctor/DoctorhomePage";
 import DoctorBlogPost from "./pages/doctor/BlogPost/";
 import BlogDetail from "./pages/doctor/BlogPost/BlogDetail";
-
+import BloodGroup from "./pages/doctor/BloodGroup/BloodGroup";
+import BloodCompatibility from "./pages/doctor/BloodCompatibility/BloodCompatibility";
+import BloodUnit from "./pages/doctor/BloodUnit/BloodUnit";
+import Profile from "./pages/doctor/Profile/Profile";
 const RouterCustom = () => {
   const location = useLocation();
   const key =
@@ -69,6 +72,10 @@ const RouterCustom = () => {
         <Route index element={<DoctorHomePage />} />
         <Route path="blog" element={<DoctorBlogPost />} />
         <Route path="blog/:id" element={<BlogDetail />} />
+        <Route path="blood-group" element={<BloodGroup />} />
+        <Route path="compatibility" element={<BloodCompatibility />} />
+        <Route path="blood-unit" element={<BloodUnit />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
 
       {/* User Layout */}

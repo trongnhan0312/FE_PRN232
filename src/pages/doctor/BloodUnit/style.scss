@@ -1,0 +1,71 @@
+.blood-unit {
+    padding: 20px;
+  
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  
+    .form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+  
+      input {
+        padding: 5px;
+        flex: 1;
+        min-width: 120px;
+      }
+  
+      button {
+        padding: 5px 10px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+  
+        &:hover {
+          background-color: #45a049;
+        }
+      }
+    }
+  
+    .table-wrapper {
+      overflow-x: auto;
+  
+      table {
+        width: 100%;
+        border-collapse: collapse;
+  
+        th,
+        td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: center;
+        }
+  
+        th {
+          background-color: #f2f2f2;
+        }
+  
+        button {
+          margin: 0 3px;
+          cursor: pointer;
+        }
+      }
+    }
+  
+    .pagination {
+      margin-top: 15px;
+      text-align: center;
+  
+      button {
+        margin: 0 5px;
+        padding: 3px 8px;
+        cursor: pointer;
+      }
+    }
+  }
+  
