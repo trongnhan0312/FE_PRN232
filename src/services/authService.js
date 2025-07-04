@@ -8,6 +8,7 @@ import { API_ENDPOINT } from "../config/apiConfig";
  * @param {string} password
  * @returns {Promise<{ success: boolean, message: string, role?: string }>}
  */
+
 export const loginService = async (email, password) => {
   try {
     const response = await axiosInstance.post(API_ENDPOINT.AUTH.LOGIN, {
@@ -18,16 +19,19 @@ export const loginService = async (email, password) => {
     const result = response.data?.resultObj;
 
     if (response.data?.isSuccessed && result?.accessToken) {
-      const { accessToken, accessTokenExpiredTime, role, email, fullName } =
+      const { id, accessToken, accessTokenExpiredTime, role, email, fullName } =
         result;
 
-      // ✅ Lưu token vào cookies
+      // ✅ Lưu token vào cookies hoặc localStorage
       setToken(accessToken);
 
-      console.log("🟢 Login success:", {
+      console.log("🟢 Đăng nhập thành công. Thông tin trả về:");
+      console.table({
+        id,
         fullName,
         email,
         role,
+        accessToken,
         accessTokenExpiredTime,
       });
 
@@ -44,8 +48,15 @@ export const loginService = async (email, password) => {
 
       return {
         success: true,
-        role,
         message: "Đăng nhập thành công",
+        data: {
+          id,
+          fullName,
+          email,
+          role,
+          accessToken,
+          accessTokenExpiredTime,
+        },
       };
     }
 
@@ -54,7 +65,7 @@ export const loginService = async (email, password) => {
       message: response.data?.message || "Đăng nhập thất bại",
     };
   } catch (error) {
-    console.error("🔴 Login error:", error);
+    console.error("🔴 Lỗi khi đăng nhập:", error);
     return {
       success: false,
       message: "Đã xảy ra lỗi khi đăng nhập",
@@ -78,16 +89,19 @@ export const loginEmployeeService = async (email, password) => {
     const result = response.data?.resultObj;
 
     if (response.data?.isSuccessed && result?.accessToken) {
-      const { accessToken, accessTokenExpiredTime, role, email, fullName } =
+      const { id, accessToken, accessTokenExpiredTime, role, email, fullName } =
         result;
 
-      // ✅ Lưu token vào cookies
+      // ✅ Lưu token vào cookies hoặc localStorage
       setToken(accessToken);
 
-      console.log("🟢 Login success:", {
+      console.log("🟢 Đăng nhập thành công. Thông tin trả về:");
+      console.table({
+        id,
         fullName,
         email,
         role,
+        accessToken,
         accessTokenExpiredTime,
       });
 
@@ -104,8 +118,15 @@ export const loginEmployeeService = async (email, password) => {
 
       return {
         success: true,
-        role,
         message: "Đăng nhập thành công",
+        data: {
+          id,
+          fullName,
+          email,
+          role,
+          accessToken,
+          accessTokenExpiredTime,
+        },
       };
     }
 
@@ -114,7 +135,7 @@ export const loginEmployeeService = async (email, password) => {
       message: response.data?.message || "Đăng nhập thất bại",
     };
   } catch (error) {
-    console.error("🔴 Login error:", error);
+    console.error("🔴 Lỗi khi đăng nhập:", error);
     return {
       success: false,
       message: "Đã xảy ra lỗi khi đăng nhập",

@@ -9,10 +9,7 @@ import "./LoginPage.scss";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
@@ -27,16 +24,11 @@ const LoginPage = () => {
   };
 
   const handleForgotPassword = () => {
-    // Điều hướng đến trang quên mật khẩu hoặc hiển thị modal
-    console.log("Forgot password clicked");
-    // navigate(ROUTER.FORGOT_PASSWORD)
     navigate(ROUTER.FORGOT_PASSWORD);
   };
 
   const handleRegister = () => {
-    // Điều hướng đến trang đăng ký
     navigate(ROUTER.REGISTER);
-    // navigate(ROUTER.REGISTER)
   };
 
   const handleLogin = async (e) => {
@@ -45,19 +37,40 @@ const LoginPage = () => {
 
     try {
       const response = await loginService(email, password);
-      console.log("Login success:", response);
+      console.log("Login response:", response);
 
       if (response.success) {
-        const role = (response.role || "").toLowerCase();
-        localStorage.setItem("roles", JSON.stringify([role]));
+        const {
+          id,
+          fullName,
+          email,
+          role,
+          accessToken,
+          accessTokenExpiredTime,
+        } = response.data;
+
+        const roleLower = (role || "").toLowerCase();
+
+        // 🔷 Lưu toàn bộ user
+        const user = {
+          id,
+          fullName,
+          email,
+          role,
+          accessToken,
+          accessTokenExpiredTime,
+        };
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("roles", JSON.stringify([roleLower]));
+
         toast.success("Đăng nhập thành công");
 
-        if (role === "admin") {
+        if (roleLower === "admin") {
           navigate(ROUTER.ADMIN);
-        } else if (role === "doctor") {
+        } else if (roleLower === "doctor") {
           navigate(ROUTER.DOCTOR.HOME);
         } else {
-          navigate(ROUTER.USER.HOME);
+          navigate(ROUTER.HOME);
         }
       } else {
         toast.error(response.message || "Sai tài khoản hoặc mật khẩu");
@@ -100,7 +113,6 @@ const LoginPage = () => {
             aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
           >
             {showPassword ? (
-              // Eye slash icon (hide)
               <svg
                 width="20"
                 height="20"
@@ -115,7 +127,6 @@ const LoginPage = () => {
                 <line x1="1" y1="1" x2="23" y2="23" />
               </svg>
             ) : (
-              // Eye icon (show)
               <svg
                 width="20"
                 height="20"

@@ -8,6 +8,7 @@ export const ROUTER = {
 
   DOCTOR: {
     HOME: "/doctor", // trang chủ bác sĩ
+    PROFILE: "/doctor/profile",
     BLOG: "/doctor/blog",
     BLOG_DETAIL: "/doctor/blog/:id", // chi tiết bài viết bác sĩ
     DONATION: "/doctor/donation",
