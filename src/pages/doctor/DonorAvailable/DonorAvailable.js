@@ -119,7 +119,7 @@ const DonorAvailable = () => {
 
               <div className="info-item">
                 <span className="label">Nhóm máu:</span>
-                <span className="value blood-group">
+                <span className="value">
                   {item.user.bloodGroup?.name || "Chưa cập nhật"}
                 </span>
               </div>
