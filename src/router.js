@@ -19,7 +19,10 @@ import BlogDetail from "./pages/doctor/BlogPost/BlogDetail";
 import BloodGroup from "./pages/doctor/BloodGroup/BloodGroup";
 import BloodCompatibility from "./pages/doctor/BloodCompatibility/BloodCompatibility";
 import BloodUnit from "./pages/doctor/BloodUnit/BloodUnit";
+import DonorAvailable from "./pages/doctor/DonorAvailable/DonorAvailable";
+import DonorAvailableDetail from "./pages/doctor/DonorAvailable/DonorAvailableDetail/DonorAvailableDetail";
 import Profile from "./pages/doctor/Profile/Profile";
+
 const RouterCustom = () => {
   const location = useLocation();
   const key =
@@ -33,14 +36,12 @@ const RouterCustom = () => {
 
   return (
     <Routes key={key}>
-      {/* Public */}
       <Route path={ROUTER.LOGIN} element={<LoginPage />} />
       <Route path={ROUTER.REGISTER} element={<SignupPage />} />
       <Route path={ROUTER.OTP_VERIFICATION} element={<OtpVerificationPage />} />
       <Route path={ROUTER.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
       <Route path={ROUTER.RESET_PASSWORD} element={<ResetPassword />} />
 
-      {/* Redirect root by role */}
       <Route
         path="/"
         element={
@@ -58,7 +59,6 @@ const RouterCustom = () => {
         }
       />
 
-      {/* Doctor Layout */}
       <Route
         path={ROUTER.DOCTOR.HOME}
         element={
@@ -76,9 +76,13 @@ const RouterCustom = () => {
         <Route path="compatibility" element={<BloodCompatibility />} />
         <Route path="blood-unit" element={<BloodUnit />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="donor-available" element={<DonorAvailable />} />
+        <Route
+          path="donor-available-detail/:id"
+          element={<DonorAvailableDetail />}
+        />
       </Route>
 
-      {/* User Layout */}
       <Route
         path={ROUTER.USER.HOME}
         element={
@@ -86,11 +90,8 @@ const RouterCustom = () => {
         }
       >
         <Route index element={<HomePage />} />
-
-        {/* thêm route con tùy ý */}
       </Route>
 
-      {/* Catch-all */}
       <Route path="*" element={<Navigate to={ROUTER.LOGIN} replace />} />
     </Routes>
   );

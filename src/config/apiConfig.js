@@ -45,6 +45,10 @@ export const API_ENDPOINT = {
     DELETE: `${API_BASE_URL}/bloodunit/delete/{id}`,
     DETAIL: `${API_BASE_URL}/bloodunit/{id}`,
   },
+  DONOR_AVAILABILITY: {
+    ALL: `${API_BASE_URL}/donoravailability/all`,
+    DETAIL: `${API_BASE_URL}/donoravailability/{id}`,
+  },
   EMPLOYEE: {
     DETAIL: `${API_BASE_URL}/employee/{id}`,
     UPDATE: `${API_BASE_URL}/employee/update-doctor-profile`,
