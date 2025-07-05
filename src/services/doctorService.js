@@ -210,3 +210,56 @@ export const deleteBloodUnit = async (id) => {
   }
 };
 
+/**
+ * Lấy danh sách Donor Availability
+ * @param {Object} params
+ * @param {string} [params.userName] - Tên người dùng (tùy chọn)
+ * @param {number} [params.pageNumber=1] - Trang hiện tại
+ * @param {number} [params.pageSize=5] - Kích thước trang
+ * @returns {Promise<Object>} dữ liệu từ server
+ */
+export const getDonorAvailability = async ({
+  userName,
+  pageNumber = 1,
+  pageSize = 5,
+} = {}) => {
+  try {
+    const query = new URLSearchParams();
+
+    // chỉ thêm userName nếu có
+    if (userName && userName.trim() !== "") {
+      query.append("userName", userName.trim());
+    }
+
+    query.append("pageNumber", pageNumber);
+    query.append("pageSize", pageSize);
+
+    const res = await axios.get(
+      `${API_ENDPOINT.DONOR_AVAILABILITY.ALL}?${query.toString()}`
+    );
+
+    console.log("✅ data:", res.data);
+    return res.data;
+  } catch (err) {
+    console.error("❌ Error fetching donor availability:", err);
+    throw err;
+  }
+};
+
+/**
+ * Lấy chi tiết Donor Availability theo ID
+ * @param {number} id - ID của donor availability
+ * @returns {Promise<Object>} dữ liệu từ server
+ */
+export const getDonorAvailabilityById = async (id) => {
+  try {
+    const res = await axios.get(
+      `${API_ENDPOINT.DONOR_AVAILABILITY.DETAIL.replace("{id}", id)}`
+    );
+    console.log("✅ Donor Availability Detail:", res.data);
+    return res.data;
+  } catch (err) {
+    console.error("❌ Error fetching donor availability by id:", err);
+    throw err;
+  }
+};
