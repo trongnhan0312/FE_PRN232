@@ -70,7 +70,7 @@ const LoginPage = () => {
         } else if (roleLower === "doctor") {
           navigate(ROUTER.DOCTOR.HOME);
         } else {
-          navigate(ROUTER.HOME);
+          navigate(ROUTER.USER.HOME);
         }
       } else {
         toast.error(response.message || "Sai tài khoản hoặc mật khẩu");
