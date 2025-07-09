@@ -1,5 +1,5 @@
 .doctor-blood-request-detail {
-  max-width: 600px;
+  max-width: 75%;
   margin: 40px auto;
   background: #fff;
   border-radius: 12px;
@@ -33,4 +33,75 @@
   color: #b71c1c;
   font-weight: 600;
   margin-right: 10px;
+}
+.doctor-blood-request-detail {
+  padding: 20px;
+
+  h2 {
+    text-align: center;
+    color: #d90429;
+    margin-bottom: 20px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin: 4px 0;
+    }
+  }
+
+  .donation-table-wrapper {
+    margin-top: 20px;
+    overflow-x: auto;
+
+    .donation-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #f8f8f8;
+      }
+
+      .compatible {
+        background-color: #e0ffe0;
+        color: #070;
+        font-weight: bold;
+      }
+
+      .incompatible {
+        background-color: #ffe0e0;
+        color: #a00;
+      }
+
+      .select-button {
+        padding: 4px 8px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #218838;
+        }
+      }
+
+      a {
+        color: #007bff;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
 }
