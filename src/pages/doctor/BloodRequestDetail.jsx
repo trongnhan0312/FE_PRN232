@@ -138,7 +138,6 @@ const BloodRequestDetail = () => {
       alert("❌ Lỗi khi tạo donation");
     }
   };
-
   const handleSelectUnit = async (unit) => {
     if (!window.confirm(`Xác nhận chọn đơn vị máu từ kho #${unit.id}?`)) return;
 
@@ -150,23 +149,40 @@ const BloodRequestDetail = () => {
       return;
     }
 
-    try {
-      // Cập nhật lại BloodRequest
-      await updateBloodRequest(detail.id, {
-        Quantity: 0,
-        Status: "Completed",
-        Notes: `Hoàn thành yêu cầu bằng đơn vị kho #${unit.id}`,
-      });
+    const updatedUnitQuantity = quantityUnit - quantityRequest;
 
-      // Cập nhật lại BloodUnit
+    if (updatedUnitQuantity < 0) {
+      alert("❌ Số lượng sau khi trừ < 0.");
+      return;
+    }
+
+    try {
+      const payload = {
+        RequestedById: detail.requestedBy?.id,
+        BloodGroupId: detail.bloodGroup?.id,
+        Quantity: quantityRequest,
+        QuantityFromStock: quantityRequest,
+        Notes: `Hoàn thành yêu cầu bằng đơn vị kho #${unit.id}`,
+        BloodComponent: detail.bloodComponent,
+        IsEmergency: detail.isEmergency ?? false,
+        RequestSource: detail.requestSource,
+        Status: "Fulfilled",
+        BloodUnitId: unit.id,
+      };
+
+      console.log("📋 Payload:", payload);
+
+      await updateBloodRequest(detail.id, payload);
+
+      // Cập nhật kho
       await updateBloodUnit(unit.id, {
         bloodGroupId: unit.bloodGroup?.id,
         bloodComponent: unit.bloodComponent,
-        quantity: quantityUnit - quantityRequest,
+        quantity: updatedUnitQuantity,
         expiryDate: unit.expiryDate,
       });
 
-      alert("✅ Đã chọn đơn vị kho thành công");
+      alert("✅ Đã chọn đơn vị kho và trừ số lượng thành công");
       window.location.reload();
     } catch (err) {
       console.error(err);
