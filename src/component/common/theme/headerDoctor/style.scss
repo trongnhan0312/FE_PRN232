@@ -75,7 +75,7 @@
       height: 36px;
       border-radius: 50%;
       overflow: hidden;
-      background: #eee;
+      background: #eeeeee;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -100,13 +100,14 @@
       position: absolute;
       right: 0;
       top: 120%;
-      background: white;
+      background: #3b82f6;
       color: #333;
       border-radius: 8px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       overflow: hidden;
       z-index: 10;
       animation: fadeIn 0.2s ease forwards;
+      width: 100px;
 
       button {
         display: block;
@@ -119,7 +120,7 @@
         transition: background-color 0.3s ease;
 
         &:hover {
-          background-color: #f0f4f8;
+          background-color: #284ccf;
         }
       }
     }

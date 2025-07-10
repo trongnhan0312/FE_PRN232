@@ -62,7 +62,7 @@ const BloodRequestList = () => {
           <tbody>
             {requests.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ textAlign: "center", color: "#888" }}>
+                <td colSpan={7} style={{ textAlign: "center", color: "#888" }}>
                   Không có yêu cầu máu nào.
                 </td>
               </tr>
@@ -82,7 +82,7 @@ const BloodRequestList = () => {
                     </span>
                   </td>
                   <td>
-                    {req.status === "Pending" && (
+                    {req.status === "Pending" ? (
                       <>
                         <Link
                           className="detail-link"
@@ -94,6 +94,13 @@ const BloodRequestList = () => {
                           Xoá
                         </button>
                       </>
+                    ) : (
+                      <Link
+                        className="detail-link"
+                        to={`/doctor/blood-requests/detail/${req.id}`}
+                      >
+                        Chi tiết
+                      </Link>
                     )}
                   </td>
                 </tr>
