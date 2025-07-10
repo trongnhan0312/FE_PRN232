@@ -13,8 +13,8 @@ export const API_ENDPOINT = {
     },
 
     USER: {
-        PROFILE: `${API_BASE_URL}/user/profile`,
-        UPDATE_PROFILE: `${API_BASE_URL}/user/update`,
+        PROFILE: `${API_BASE_URL}/users/`, // GET /users/{id}
+        UPDATE_PROFILE: `${API_BASE_URL}/users/update-user-profile`, // PUT /users/update-user-profile
     },
 
     ADMIN: {
