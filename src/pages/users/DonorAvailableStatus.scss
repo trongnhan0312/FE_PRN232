@@ -1,0 +1,44 @@
+.donor-available-status-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 32px 28px;
+}
+.donor-available-status-container h2 {
+  color: #b71c1c;
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+.donor-available-status-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+.donor-available-status-container li {
+  margin-bottom: 14px;
+  font-size: 1.1rem;
+  color: #333;
+  background: #f8f8f8;
+  border-radius: 6px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+}
+.donor-available-status-container li b {
+  min-width: 120px;
+  color: #b71c1c;
+  font-weight: 600;
+  margin-right: 10px;
+}
+.eligible {
+  color: #388e3c;
+  font-weight: 600;
+}
+.not-eligible {
+  color: #d32f2f;
+  font-weight: 600;
+}

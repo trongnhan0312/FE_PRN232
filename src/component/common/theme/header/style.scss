@@ -2,23 +2,196 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background-color: #282c34;
-    color: white;
-  
-    .logout-btn {
-      background-color: #ff4d4f;
-      border: none;
-      padding: 0.5rem 1rem;
-      color: white;
+    padding: 0.6rem 2.2rem;
+    background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+    color: #fff;
+    border-radius: 0 0 18px 18px;
+    box-shadow: 0 4px 24px 0 rgba(80, 80, 180, 0.10);
+    min-height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    animation: fadeInDown 0.7s cubic-bezier(.23,1.01,.32,1) both;
+    gap: 18px;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
       cursor: pointer;
-      border-radius: 5px;
-      font-size: 0.9rem;
-      transition: background-color 0.3s;
-  
-      &:hover {
-        background-color: #d9363e;
-      }
+    }
+
+    .header-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 8px #6366f1aa;
+      object-fit: cover;
+      transition: transform 0.2s;
+    }
+
+    .header-logo:hover {
+      transform: scale(1.08) rotate(-6deg);
+    }
+
+    .header-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #fff;
+      text-shadow: 0 2px 8px #6366f1aa;
+      transition: color 0.2s;
+    }
+
+    .header-title:hover {
+      color: #c7d2fe;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 18px;
+    }
+
+    .header-nav button {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.4rem 1.1rem;
+      border-radius: 7px;
+      transition: background 0.18s, color 0.18s, transform 0.18s;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .header-nav button:hover, .header-nav button.active {
+      background: #fff;
+      color: #6366f1;
+      transform: translateY(-2px) scale(1.06);
+    }
+
+    .header-nav-shortcut {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      margin: 0 18px;
+    }
+    .header-nav-shortcut button {
+      background: rgba(255,255,255,0.10);
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.45rem 1.1rem 0.45rem 0.9rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: background 0.18s, color 0.18s, transform 0.18s, box-shadow 0.18s;
+      cursor: pointer;
+      outline: none;
+      position: relative;
+      box-shadow: 0 2px 8px 0 rgba(99,102,241,0.08);
+    }
+    .header-nav-shortcut button:hover, .header-nav-shortcut button.active {
+      background: #fff;
+      color: #6366f1;
+      transform: translateY(-2px) scale(1.06);
+      box-shadow: 0 4px 16px 0 rgba(99,102,241,0.16);
+    }
+    .shortcut-icon {
+      font-size: 1.25rem;
+      margin-right: 2px;
+      filter: drop-shadow(0 2px 8px #818cf8aa);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logout-btn {
+      background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+      border: none;
+      padding: 0.6rem 1.3rem;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px 0 rgba(239, 68, 68, 0.10);
+      transition: background 0.2s, transform 0.2s;
+      outline: none;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .logout-btn:hover {
+      background: linear-gradient(90deg, #f87171 0%, #ef4444 100%);
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    .logout-icon {
+      font-size: 1.2rem;
     }
   }
-  
+
+  @keyframes fadeInDown {
+    0% { opacity: 0; transform: translateY(-30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    .app-header {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0.8rem 1rem;
+      gap: 10px;
+    }
+
+    .header-nav {
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .header-nav-shortcut {
+      gap: 6px;
+      margin: 0 0 8px 0;
+    }
+    .header-nav-shortcut button {
+      font-size: 0.97rem;
+      padding: 0.35rem 0.7rem 0.35rem 0.7rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .header-title {
+      font-size: 1rem;
+    }
+
+    .header-logo {
+      width: 32px;
+      height: 32px;
+    }
+
+    .header-nav button {
+      font-size: 0.95rem;
+      padding: 0.3rem 0.7rem;
+    }
+
+    .header-nav-shortcut {
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 0 0 6px 0;
+    }
+    .header-nav-shortcut button {
+      font-size: 0.93rem;
+      padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    }
+  }
