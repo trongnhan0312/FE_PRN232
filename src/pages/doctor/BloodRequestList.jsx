@@ -42,7 +42,7 @@ const BloodRequestList = () => {
         Đang tải danh sách yêu cầu máu...
       </div>
     );
-
+  console.log("requests", requests);
   return (
     <div className="blood-request-list-container">
       <h2 className="blood-request-title">Danh sách yêu cầu máu</h2>
@@ -54,6 +54,7 @@ const BloodRequestList = () => {
               <th>Người yêu cầu</th>
               <th>Nhóm máu</th>
               <th>Số lượng</th>
+              <th>Nguồn yêu cầu</th>
               <th>Trạng thái</th>
               <th>Hành động</th>
             </tr>
@@ -72,6 +73,7 @@ const BloodRequestList = () => {
                   <td>{req.requestedBy?.fullName || "N/A"}</td>
                   <td>{req.bloodGroup?.name || ""}</td>
                   <td>{req.quantity}</td>
+                  <td>{req.requestSource}</td>
                   <td>
                     <span
                       className={`status-badge status-${req.status?.toLowerCase()}`}

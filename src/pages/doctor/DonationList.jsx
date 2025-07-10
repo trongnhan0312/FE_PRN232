@@ -1,26 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  getAllDonations,
-  getBloodCompatibility,
-} from "../../services/doctorService";
+import { getAllDonations } from "../../services/doctorService";
 import "./DonationList.scss";
 
 const DonationList = ({ onSelect }) => {
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [compatibilityList, setCompatibilityList] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [donationsRes, compatibilityRes] = await Promise.all([
-          getAllDonations(),
-          getBloodCompatibility({ pageSize: 100 }),
-        ]);
-
+        const donationsRes = await getAllDonations();
         setDonations(donationsRes.resultObj?.items || []);
-        setCompatibilityList(compatibilityRes.resultObj?.items || []);
       } catch (err) {
         console.error("[ERROR] fetchData:", err);
         setDonations([]);
@@ -31,45 +22,7 @@ const DonationList = ({ onSelect }) => {
 
     fetchData();
   }, []);
-
-  const normalize = (str) => (str || "").toLowerCase().trim();
-
-  const isCompatible = (recipient, donor, component) => {
-    const r = normalize(recipient);
-    const c = normalize(component);
-    const d = normalize(donor);
-
-    if (!r || !c || !d) {
-      console.warn(
-        `[WARN] Missing values: recipient=${r}, donor=${d}, component=${c}`
-      );
-      return false;
-    }
-
-    const result = compatibilityList.some((item) => {
-      const donorGroup = normalize(item.donorBloodGroupModelView?.name);
-      const recipientGroup = normalize(item.recipientBloodGroupModelView?.name);
-      const comp = normalize(item.bloodComponent);
-
-      const recipientMatch = recipientGroup === r;
-      const donorMatch = donorGroup === d;
-      const componentMatch = comp === c;
-      const isCompat = item.isCompatible;
-
-      console.log(
-        `[CHECK] recipient: ${r} (${recipientMatch}) | donor: ${d} (${donorMatch}) | component: ${c} (${componentMatch}) | isCompatible: ${isCompat}`
-      );
-
-      return recipientMatch && donorMatch && componentMatch && isCompat;
-    });
-
-    console.log(
-      `=> isCompatible(${recipient}, ${donor}, ${component}) = ${result}`
-    );
-
-    return result;
-  };
-
+  console.log("donations", donations);
   if (loading) {
     return (
       <div className="donation-loading">Đang tải danh sách hiến máu...</div>
@@ -94,7 +47,6 @@ const DonationList = ({ onSelect }) => {
               <th>Ngày hiến</th>
               <th>Số lượng</th>
               <th>Ghi chú</th>
-              <th>Chọn</th>
             </tr>
           </thead>
           <tbody>
@@ -105,58 +57,32 @@ const DonationList = ({ onSelect }) => {
                 </td>
               </tr>
             ) : (
-              donations.map((item) => {
-                const donorGroup = item.user?.bloodGroup?.name || "";
-                const recipientGroup =
-                  item.bloodRequest?.requestedBy?.bloodGroup?.name || "";
-                const component = item.bloodRequest?.bloodComponent || "";
-
-                const compatible = isCompatible(
-                  recipientGroup,
-                  donorGroup,
-                  component
-                );
-
-                return (
-                  <tr
-                    key={item.id}
-                    className={compatible ? "compatible" : "incompatible"}
-                  >
-                    <td>{item.id}</td>
-                    <td>{item.user?.fullName || "N/A"}</td>
-                    <td>{donorGroup || "N/A"}</td>
-                    <td>{item.bloodRequest?.requestedBy?.fullName || "N/A"}</td>
-                    <td>
-                      <Link
-                        to={`/doctor/blood-requests/detail/${item.bloodRequest?.id}`}
-                        className="blood-request-link"
-                      >
-                        #{item.bloodRequest?.id} —{" "}
-                        {item.bloodRequest?.bloodGroup?.name || "?"} (
-                        {item.bloodRequest?.quantity || "?"} đơn vị)
-                      </Link>
-                    </td>
-                    <td>{component || "-"}</td>
-                    <td>
-                      {item.donationDate
-                        ? new Date(item.donationDate).toLocaleDateString()
-                        : "N/A"}
-                    </td>
-                    <td>{item.quantity || "?"} ML</td>
-                    <td>{item.notes || "-"}</td>
-                    <td>
-                      {compatible && (
-                        <button
-                          onClick={() => onSelect(item)}
-                          className="select-button"
-                        >
-                          Chọn
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })
+              donations.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.id}</td>
+                  <td>{item.user?.fullName || "N/A"}</td>
+                  <td>{item.user?.bloodGroup?.name || "N/A"}</td>
+                  <td>{item.bloodRequest?.requestedBy?.fullName || "N/A"}</td>
+                  <td>
+                    <Link
+                      to={`/doctor/blood-requests/detail/${item.bloodRequest?.id}`}
+                      className="blood-request-link"
+                    >
+                      #{item.bloodRequest?.id} —{" "}
+                      {item.bloodRequest?.bloodGroup?.name || "?"} (
+                      {item.bloodRequest?.quantity || "?"} đơn vị)
+                    </Link>
+                  </td>
+                  <td>{item.bloodRequest?.bloodComponent || "-"}</td>
+                  <td>
+                    {item.donationDate
+                      ? new Date(item.donationDate).toLocaleDateString()
+                      : "N/A"}
+                  </td>
+                  <td>{item.quantity || "?"} ML</td>
+                  <td>{item.notes || "-"}</td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>

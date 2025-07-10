@@ -4,6 +4,7 @@ import {
   createBloodUnit,
   updateBloodUnit,
   deleteBloodUnit,
+  getBloodGroups,
 } from "../../../services/doctorService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,6 +14,13 @@ import "./style.scss";
 const BloodUnit = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [bloodGroups, setBloodGroups] = useState([]);
+  const [components] = useState([
+    "WholeBlood",
+    "RedBloodCell",
+    "Plasma",
+    "Platelets",
+  ]);
   const [form, setForm] = useState({
     id: null,
     bloodGroupId: "",
@@ -40,8 +48,19 @@ const BloodUnit = () => {
     }
   };
 
+  const fetchBloodGroups = async () => {
+    try {
+      const items = await getBloodGroups({ pageNumber: 1, pageSize: 20 });
+      setBloodGroups(items || []);
+    } catch (err) {
+      console.error("Error fetching blood groups", err);
+      toast.error("Không thể tải nhóm máu");
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchBloodGroups();
   }, []);
 
   const handleChange = (e) => {
@@ -114,20 +133,34 @@ const BloodUnit = () => {
       <h1>🩸 Quản lý đơn vị máu</h1>
 
       <div className="form">
-        <input
-          type="text"
+        {/* nhóm máu */}
+        <select
           name="bloodGroupId"
-          placeholder="ID nhóm máu"
           value={form.bloodGroupId}
           onChange={handleChange}
-        />
-        <input
-          type="text"
+        >
+          <option value="">Chọn nhóm máu</option>
+          {bloodGroups.map((group) => (
+            <option key={group.id} value={group.id}>
+              {group.name}
+            </option>
+          ))}
+        </select>
+
+        {/* thành phần */}
+        <select
           name="bloodComponent"
-          placeholder="Thành phần"
           value={form.bloodComponent}
           onChange={handleChange}
-        />
+        >
+          <option value="">Chọn thành phần</option>
+          {components.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
         <input
           type="number"
           name="quantity"
