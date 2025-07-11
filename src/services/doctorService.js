@@ -893,6 +893,15 @@ export const getUserProfile = async (id) => {
   }
 };
 
+export const getAllUserProfiles = async () => {
+  try {
+    const res = await axios.get(API_ENDPOINT.USER.ALL);
+    return res.data;
+  } catch (error) {
+    console.error("❌ Error fetching all user profiles:", error);
+    throw error;
+  }
+};
 export const updateUserProfile = async (data) => {
   try {
     const formData = new FormData();

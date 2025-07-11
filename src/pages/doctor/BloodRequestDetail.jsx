@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import {
   getBloodRequestById,
-  getDonorAvailability,
   getBloodCompatibility,
   getBloodUnits,
   updateBloodUnit,
-  updateBloodRequest, // ✅ Thêm
+  updateBloodRequest,
   createDonation,
+  getAllUserProfiles,
 } from "../../services/doctorService";
 import "./BloodRequestDetail.scss";
 
@@ -42,23 +42,7 @@ const BloodRequestDetail = () => {
     fetchDetail();
   }, [id]);
 
-  useEffect(() => {
-    if (!detail) return;
-
-    if (detail.status === "Pending") {
-      fetchCompatibility();
-
-      if (detail.requestSource === "FromDonor") {
-        fetchDonors();
-      }
-
-      if (detail.requestSource === "FromStock") {
-        fetchBloodUnits();
-      }
-    }
-  }, [detail]);
-
-  const fetchCompatibility = async () => {
+  const fetchCompatibility = useCallback(async () => {
     try {
       const res = await getBloodCompatibility({ pageSize: 1000 });
       const list = res.resultObj?.items || [];
@@ -79,22 +63,37 @@ const BloodRequestDetail = () => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const fetchDonors = async () => {
+  const fetchDonors = useCallback(async () => {
     setLoadingDonations(true);
     try {
-      const res = await getDonorAvailability({ pageSize: 100 });
-      setDonations(res.resultObj?.items || []);
+      const res = await getAllUserProfiles();
+      const users = res.resultObj || [];
+
+      const mappedDonors = users
+        .filter((user) => user.id !== detail?.requestedBy?.id) // bỏ người yêu cầu
+        .map((user) => ({
+          id: user.id,
+          user: {
+            id: user.id,
+            fullName: user.fullName,
+            bloodGroup: user.bloodGroup,
+          },
+          availabilityDate: null,
+          status: user.status ? "Active" : "Inactive",
+        }));
+
+      setDonations(mappedDonors);
     } catch (err) {
       console.error(err);
       setDonations([]);
     } finally {
       setLoadingDonations(false);
     }
-  };
+  }, [detail?.requestedBy?.id]);
 
-  const fetchBloodUnits = async () => {
+  const fetchBloodUnits = useCallback(async () => {
     setLoadingUnits(true);
     try {
       const res = await getBloodUnits({ pageSize: 100 });
@@ -105,7 +104,23 @@ const BloodRequestDetail = () => {
     } finally {
       setLoadingUnits(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!detail) return;
+
+    if (detail.status === "Pending") {
+      fetchCompatibility();
+
+      if (detail.requestSource === "FromDonor") {
+        fetchDonors();
+      }
+
+      if (detail.requestSource === "FromStock") {
+        fetchBloodUnits();
+      }
+    }
+  }, [detail, fetchCompatibility, fetchDonors, fetchBloodUnits]);
 
   const isCompatible = (recipient, donor, component) => {
     const key = `${normalize(recipient)}|${normalize(donor)}|${normalize(
@@ -138,6 +153,7 @@ const BloodRequestDetail = () => {
       alert("❌ Lỗi khi tạo donation");
     }
   };
+
   const handleSelectUnit = async (unit) => {
     if (!window.confirm(`Xác nhận chọn đơn vị máu từ kho #${unit.id}?`)) return;
 
@@ -174,7 +190,6 @@ const BloodRequestDetail = () => {
 
       await updateBloodRequest(detail.id, payload);
 
-      // Cập nhật kho
       await updateBloodUnit(unit.id, {
         bloodGroupId: unit.bloodGroup?.id,
         bloodComponent: unit.bloodComponent,
@@ -246,7 +261,6 @@ const BloodRequestDetail = () => {
                   <th>Mã</th>
                   <th>Người hiến</th>
                   <th>Nhóm máu</th>
-                  <th>Ngày đăng ký</th>
                   <th>Trạng thái</th>
                   <th>Chọn</th>
                 </tr>
@@ -267,11 +281,6 @@ const BloodRequestDetail = () => {
                       <td>{item.id}</td>
                       <td>{item.user?.fullName || "N/A"}</td>
                       <td>{item.user?.bloodGroup?.name || "N/A"}</td>
-                      <td>
-                        {item.availabilityDate
-                          ? new Date(item.availabilityDate).toLocaleDateString()
-                          : "N/A"}
-                      </td>
                       <td>{item.status || "-"}</td>
                       <td>
                         {compatible ? (
