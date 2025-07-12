@@ -15,6 +15,7 @@ const BloodRequestForm = ({ userId, open, onClose }) => {
     });
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    const [formError, setFormError] = useState("");
 
     useEffect(() => {
         if (!open) return;
@@ -39,6 +40,11 @@ const BloodRequestForm = ({ userId, open, onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setFormError("");
+        if (!form.Notes || !form.Notes.trim()) {
+            setFormError("Ghi chú không được để trống");
+            return;
+        }
         setLoading(true);
         setMessage("");
         try {
@@ -111,6 +117,7 @@ const BloodRequestForm = ({ userId, open, onClose }) => {
                     <div style={{ marginBottom: 18 }}>
                         <label style={{ fontWeight: 500 }}>Ghi chú:</label>
                         <textarea name="Notes" value={form.Notes} onChange={handleChange} rows={2} style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #ccc", marginTop: 4 }} />
+                        {formError && <div style={{ color: '#d32f2f', marginTop: 4, fontWeight: 500 }}>{formError}</div>}
                     </div>
                     <button type="submit" disabled={loading} style={{ background: "#b71c1c", color: "#fff", padding: "10px 0", border: 0, borderRadius: 6, width: "100%", fontWeight: 600, fontSize: 16, letterSpacing: 1 }}>
                         {loading ? "Đang gửi..." : "Gửi yêu cầu"}

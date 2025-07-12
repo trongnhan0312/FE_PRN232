@@ -1,13 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BloodRequestForm from "./BloodRequestForm";
 import { getCurrentUser } from "../../utils/auth";
 import BlogList from "../doctor/BlogPost/BlogList";
 import { Link } from "react-router-dom";
+import { getUserDonations } from "../../services/doctorService";
 
 const HomePage = () => {
   const user = getCurrentUser();
   const userId = user?.id || "";
   const [showRequestForm, setShowRequestForm] = useState(false);
+  const [donations, setDonations] = useState([]);
+  const [loadingDonations, setLoadingDonations] = useState(true);
+
+  useEffect(() => {
+    if (!userId) return;
+    setLoadingDonations(true);
+    getUserDonations(userId, { pageNumber: 1, pageSize: 5 })
+      .then((res) => {
+        setDonations(res?.items || []);
+        setLoadingDonations(false);
+      })
+      .catch(() => setLoadingDonations(false));
+  }, [userId]);
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
@@ -25,6 +39,38 @@ const HomePage = () => {
         <Link to="/home/blood-compatibility-lookup" style={cardStyle}>Tra cứu tương thích máu</Link>
         <button onClick={() => setShowRequestForm(true)} style={{ ...cardStyle, cursor: 'pointer', border: 'none', background: '#b71c1c', color: '#fff' }}>Tạo yêu cầu máu mới</button>
       </div>
+      {/* Lịch sử hiến máu */}
+      <section id="donation-history">
+        <h2 style={{ color: '#1976d2' }}>Lịch sử hiến máu gần đây</h2>
+        {loadingDonations ? (
+          <div>Đang tải...</div>
+        ) : donations.length === 0 ? (
+          <div>Bạn chưa có lịch sử hiến máu.</div>
+        ) : (
+          <table style={{ width: '100%', background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #eee', marginBottom: 32 }}>
+            <thead>
+              <tr style={{ background: '#f5f5f5' }}>
+                <th style={thStyle}>Ngày hiến</th>
+                <th style={thStyle}>Nhóm máu</th>
+                <th style={thStyle}>Số lượng (ml)</th>
+                <th style={thStyle}>Người nhận</th>
+                <th style={thStyle}>Ghi chú</th>
+              </tr>
+            </thead>
+            <tbody>
+              {donations.map((item) => (
+                <tr key={item.id}>
+                  <td style={tdStyle}>{formatDate(item.donationDate)}</td>
+                  <td style={tdStyle}>{item.user?.bloodGroup?.name || "-"}</td>
+                  <td style={tdStyle}>{item.quantity}</td>
+                  <td style={tdStyle}>{item.bloodRequest?.requestedBy?.fullName || "-"}</td>
+                  <td style={tdStyle}>{item.notes || "-"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
       {/* Section Blog */}
       <section id="blog">
         <h2 style={{ color: '#1976d2' }}>Blog chia sẻ & kiến thức</h2>
@@ -35,6 +81,12 @@ const HomePage = () => {
     </div>
   );
 };
+
+function formatDate(dateStr) {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('vi-VN');
+}
 
 const cardStyle = {
   display: 'inline-block',
@@ -49,5 +101,8 @@ const cardStyle = {
   textAlign: 'center',
   transition: 'all 0.2s',
 };
+
+const thStyle = { padding: 8, fontWeight: 700, color: '#b71c1c', background: '#f5f5f5', borderBottom: '1px solid #eee' };
+const tdStyle = { padding: 8, textAlign: 'center', borderBottom: '1px solid #f0f0f0' };
 
 export default HomePage;

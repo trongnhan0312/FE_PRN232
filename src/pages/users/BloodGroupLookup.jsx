@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getBloodGroupsNoPaging } from "../../services/doctorService";
 import "./BloodGroupLookup.scss";
+import { Droplets } from "lucide-react";
 
 const BloodGroupLookup = () => {
     const [groups, setGroups] = useState([]);
@@ -10,7 +11,8 @@ const BloodGroupLookup = () => {
         const fetch = async () => {
             try {
                 const res = await getBloodGroupsNoPaging();
-                setGroups(res.resultObj || []);
+                // Reverse the groups order before setting state
+                setGroups((res.resultObj || []).slice().reverse());
             } catch {
                 setGroups([]);
             } finally {
@@ -20,28 +22,27 @@ const BloodGroupLookup = () => {
         fetch();
     }, []);
 
-    if (loading) return <div>Đang tải dữ liệu nhóm máu...</div>;
+    if (loading) return <div className="bgl-message">Đang tải dữ liệu nhóm máu...</div>;
     return (
-        <div className="blood-group-lookup-container">
-            <h2>Tra cứu nhóm máu</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Mã nhóm</th>
-                        <th>Tên nhóm máu</th>
-                        <th>Mô tả</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {groups.map((g) => (
-                        <tr key={g.id}>
-                            <td>{g.id}</td>
-                            <td>{g.name}</td>
-                            <td>{g.description}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className="blood-group-lookup-fancy">
+            <div className="bgl-card">
+                <div className="bgl-header">
+                    <Droplets size={32} style={{ color: '#d32f2f', marginRight: 8 }} />
+                    <h2>Tra cứu nhóm máu</h2>
+                </div>
+                <div className="bgl-list">
+                    {groups.length === 0 ? (
+                        <div className="bgl-message">Không có dữ liệu nhóm máu.</div>
+                    ) : (
+                        groups.map((g) => (
+                            <div className="bgl-item" key={g.id}>
+                                <div className="bgl-badge">{g.name}</div>
+                                <div className="bgl-id">Mã: <span>{g.id}</span></div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
         </div>
     );
 };
