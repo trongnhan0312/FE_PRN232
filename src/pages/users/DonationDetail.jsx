@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { API_ENDPOINT } from "../../config/apiConfig";
+import { getUserDonationById } from "../../services/doctorService";
 import "./DonationDetail.scss";
 
 const DonationDetail = () => {
@@ -13,8 +12,8 @@ const DonationDetail = () => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const res = await axios.get(API_ENDPOINT.DONATION.DETAIL.replace("{id}", id));
-                setDonation(res.data?.resultObj || null);
+                const res = await getUserDonationById(id);
+                setDonation(res || null);
             } catch {
                 setDonation(null);
             } finally {
@@ -33,9 +32,10 @@ const DonationDetail = () => {
             <div className="donation-detail-card">
                 <div><b>Mã hiến máu:</b> {donation.id}</div>
                 <div><b>Ngày hiến:</b> {donation.donationDate?.substring(0, 10)}</div>
-                <div><b>Số lượng:</b> {donation.amount}</div>
-                <div><b>Yêu cầu máu liên quan:</b> {donation.bloodRequestId}</div>
-                <div><b>Ghi chú:</b> {donation.note || "-"}</div>
+                <div><b>Số lượng:</b> {donation.quantity} ml</div>
+                <div><b>Nhóm máu:</b> {donation.user?.bloodGroup?.name || "-"}</div>
+                <div><b>Người nhận:</b> {donation.bloodRequest?.requestedBy?.fullName || "-"}</div>
+                <div><b>Ghi chú:</b> {donation.notes || "-"}</div>
             </div>
             <button className="back-btn" onClick={() => navigate(-1)}>Quay lại</button>
         </div>
