@@ -17,7 +17,7 @@ const BloodUnit = () => {
   const [bloodGroups, setBloodGroups] = useState([]);
   const [components] = useState([
     "WholeBlood",
-    "RedBloodCell",
+    "RedBloodCells", // đã sửa
     "Plasma",
     "Platelets",
   ]);
@@ -47,7 +47,7 @@ const BloodUnit = () => {
       setLoading(false);
     }
   };
-  console.log("data", data);
+
   const fetchBloodGroups = async () => {
     try {
       const items = await getBloodGroups({ pageNumber: 1, pageSize: 20 });
