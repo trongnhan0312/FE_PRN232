@@ -15,7 +15,7 @@ const DonationHistory = () => {
         const fetch = async () => {
             try {
                 const res = await getUserDonations(userId);
-                setDonations(res.items || []);
+                setDonations(res);
             } catch {
                 setDonations([]);
             } finally {
@@ -42,13 +42,14 @@ const DonationHistory = () => {
                         {donations.map((d) => (
                             <div className="dh-item" key={d.id}>
                                 <div className="dh-item-main">
-                                    <div className="dh-blood-group">{d.bloodGroup?.name || "-"}</div>
-                                    <div className="dh-amount">{d.amount} ml</div>
+                                    <div className="dh-blood-group">{d.user?.bloodGroup?.name || "-"}</div>
+                                    <div className="dh-amount">{d.quantity} ml</div>
                                     <div className="dh-date">{d.donationDate?.substring(0, 10)}</div>
                                 </div>
                                 <div className="dh-item-info">
-                                    <div><span className="dh-label">Yêu cầu máu:</span> <span className="dh-value">{d.bloodRequestId || "-"}</span></div>
+                                    <div><span className="dh-label">Người nhận:</span> <span className="dh-value">{d.bloodRequest?.requestedBy?.fullName || "-"}</span></div>
                                     <div><span className="dh-label">Mã hiến máu:</span> <span className="dh-value">#{d.id}</span></div>
+                                    <div><span className="dh-label">Ghi chú:</span> <span className="dh-value">{d.notes || "-"}</span></div>
                                     <Link className="dh-detail-link" to={`/home/donation-detail/${d.id}`}>Xem chi tiết</Link>
                                 </div>
                             </div>

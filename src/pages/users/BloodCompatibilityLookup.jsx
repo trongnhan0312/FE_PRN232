@@ -1,49 +1,85 @@
+
 import React, { useEffect, useState } from "react";
 import { getBloodCompatibility } from "../../services/doctorService";
 import "./BloodCompatibilityLookup.scss";
 
 const BloodCompatibilityLookup = () => {
-    const [compatibilities, setCompatibilities] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    const fetchCompatibility = async (pageNumber = 1) => {
+        setLoading(true);
+        try {
+            const res = await getBloodCompatibility({ pageNumber, pageSize: 10 });
+            if (res?.isSuccessed) {
+                setData(res.resultObj.items);
+                setPage(res.resultObj.currentPage);
+                setTotalPages(res.resultObj.totalPages);
+            }
+        } catch (err) {
+            setData([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetch = async () => {
-            try {
-                const res = await getBloodCompatibility({ pageNumber: 1, pageSize: 200 });
-                setCompatibilities(res.resultObj?.items || []);
-            } catch {
-                setCompatibilities([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetch();
+        fetchCompatibility();
     }, []);
 
-    if (loading) return <div>Đang tải dữ liệu tương thích máu...</div>;
+    const handlePageChange = (newPage) => {
+        if (newPage < 1 || newPage > totalPages) return;
+        fetchCompatibility(newPage);
+    };
+
     return (
-        <div className="blood-compatibility-lookup-container fancy">
+        <div className="blood-compatibility-lookup-container">
             <h2>Tra cứu tương thích máu</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Thành phần máu</th>
-                        <th>Nhóm máu cho</th>
-                        <th>Nhóm máu nhận</th>
-                        <th>Tương thích</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {compatibilities.map((c, idx) => (
-                        <tr key={idx} className={c.isCompatible ? "compatible" : "not-compatible"}>
-                            <td>{c.bloodComponent}</td>
-                            <td>{c.donorBloodGroupModelView?.name}</td>
-                            <td>{c.recipientBloodGroupModelView?.name}</td>
-                            <td>{c.isCompatible ? <span style={{ color: '#388e3c', fontWeight: 600 }}>✔ Có</span> : <span style={{ color: '#d32f2f', fontWeight: 600 }}>✘ Không</span>}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {loading ? (
+                <div className="bcl-loading">Đang tải dữ liệu tương thích máu...</div>
+            ) : (
+                <div className="bcl-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nhóm máu cho</th>
+                                <th>Nhóm máu nhận</th>
+                                <th>Thành phần máu</th>
+                                <th>Tương thích</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((item) => (
+                                <tr key={item.id}>
+                                    <td>{item.donorBloodGroupModelView?.name}</td>
+                                    <td>{item.recipientBloodGroupModelView?.name}</td>
+                                    <td>{item.bloodComponent}</td>
+                                    <td>
+                                        {item.isCompatible ? (
+                                            <span className="bcl-yes">✅ Có</span>
+                                        ) : (
+                                            <span className="bcl-no">❌ Không</span>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            <div className="bcl-pagination">
+                <button disabled={page === 1} onClick={() => handlePageChange(page - 1)}>
+                    ⬅️ Trang trước
+                </button>
+                <span>
+                    Trang <strong>{page}</strong> / <strong>{totalPages}</strong>
+                </span>
+                <button disabled={page === totalPages} onClick={() => handlePageChange(page + 1)}>
+                    Trang tiếp ➡️
+                </button>
+            </div>
         </div>
     );
 };
