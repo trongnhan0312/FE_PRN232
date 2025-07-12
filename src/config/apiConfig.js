@@ -15,6 +15,7 @@ export const API_ENDPOINT = {
     USER: {
         PROFILE: `${API_BASE_URL}/users/`, // GET /users/{id}
         UPDATE_PROFILE: `${API_BASE_URL}/users/update-user-profile`, // PUT /users/update-user-profile
+        ALL: `${API_BASE_URL}/users/all`, // GET /users/all
     },
 
     ADMIN: {
