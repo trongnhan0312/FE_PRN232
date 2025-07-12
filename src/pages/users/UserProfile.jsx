@@ -180,75 +180,103 @@ const UserProfile = () => {
         return <div className="user-profile-message">Không tìm thấy hồ sơ.</div>;
     }
     return (
-        <div className="user-profile-container fancy">
-            <div className="profile-card">
-                <div className="avatar-section">
-                    <div className="avatar-wrapper">
-                        {avatarPreview ? (
-                            <img src={avatarPreview} alt="avatar" className="avatar-img" />
-                        ) : (
-                            <User className="avatar-img" />
-                        )}
-                        {edit && (
-                            <button
-                                type="button"
-                                className="avatar-upload-btn"
-                                onClick={() => fileInputRef.current.click()}
-                                title="Đổi ảnh đại diện"
-                            >
-                                <Camera />
-                            </button>
-                        )}
-                        <input
-                            type="file"
-                            accept="image/*"
-                            style={{ display: "none" }}
-                            ref={fileInputRef}
-                            onChange={handleAvatarChange}
-                        />
+        <div className="user-profile-fancy">
+            <div className="upf-card">
+                <div className="upf-header">
+                    <div className="upf-avatar-block">
+                        <div className="upf-avatar-wrapper">
+                            {avatarPreview ? (
+                                <img src={avatarPreview} alt="avatar" className="upf-avatar-img" />
+                            ) : (
+                                <User className="upf-avatar-img" />
+                            )}
+                            {edit && (
+                                <button
+                                    type="button"
+                                    className="upf-avatar-upload-btn"
+                                    onClick={() => fileInputRef.current.click()}
+                                    title="Đổi ảnh đại diện"
+                                >
+                                    <Camera />
+                                </button>
+                            )}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: "none" }}
+                                ref={fileInputRef}
+                                onChange={handleAvatarChange}
+                            />
+                        </div>
+                        <div className="upf-name-block">
+                            {edit ? (
+                                <input
+                                    name="fullName"
+                                    value={form.fullName || ""}
+                                    onChange={handleChange}
+                                    className="upf-fullname-input"
+                                    placeholder="Họ tên"
+                                    required
+                                    autoFocus
+                                />
+                            ) : (
+                                <div className="upf-fullname">{form.fullName || "-"}</div>
+                            )}
+                            <div className="upf-blood-group">
+                                <Droplets size={18} style={{ marginRight: 4 }} />
+                                {profile?.bloodGroup?.name || "-"}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <h2>Hồ sơ cá nhân</h2>
-                <form className="user-profile-form" encType="multipart/form-data" onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
-                    <label>Họ tên</label>
-                    <input name="fullName" value={form.fullName || ""} onChange={handleChange} disabled={!edit} className={edit ? "edit-mode" : ""} required />
-                    {formErrors.fullName && <div className="form-error">{formErrors.fullName}</div>}
-                    <label>Số điện thoại</label>
-                    <input name="phoneNumber" value={form.phoneNumber || ""} onChange={handleChange} disabled={!edit} className={edit ? "edit-mode" : ""} />
-                    {formErrors.phoneNumber && <div className="form-error">{formErrors.phoneNumber}</div>}
-                    <label>Ngày sinh</label>
-                    <input name="dateOfBirth" type="date" value={form.dateOfBirth || ""} onChange={handleChange} disabled={!edit} className={edit ? "edit-mode" : ""} />
-                    {formErrors.dateOfBirth && <div className="form-error">{formErrors.dateOfBirth}</div>}
-                    <label>Giới tính</label>
-                    <select name="gender" value={form.gender || ""} onChange={handleChange} disabled={!edit} className={edit ? "edit-mode" : ""}>
-                        <option value="">Chọn</option>
-                        <option value="male">Nam</option>
-                        <option value="female">Nữ</option>
-                        <option value="other">Khác</option>
-                    </select>
-                    <label>Nhóm máu</label>
-                    {edit ? (
-                        <select name="bloodGroupId" value={form.bloodGroupId || ""} onChange={handleChange} className="edit-mode">
-                            <option value="">Chọn nhóm máu</option>
-                            {bloodGroups.map(bg => (
-                                <option key={bg.id} value={bg.id}>{bg.name}</option>
-                            ))}
-                        </select>
-                    ) : (
-                        <input value={profile.bloodGroup?.name || ""} disabled />
-                    )}
-                    <div className="profile-btn-group">
+                <form className="upf-form" encType="multipart/form-data" onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
+                    <div className="upf-info-grid">
+                        {/* Họ tên đã chuyển lên avatar block */}
+                        <div className="upf-info-item">
+                            <span className="upf-label"><Phone size={16} /> Số điện thoại</span>
+                            <input name="phoneNumber" value={form.phoneNumber || ""} onChange={handleChange} disabled={!edit} className={edit ? "edit-mode" : ""} />
+                            {formErrors.phoneNumber && <div className="form-error">{formErrors.phoneNumber}</div>}
+                        </div>
+                        <div className="upf-info-item">
+                            <span className="upf-label"><Calendar size={16} /> Ngày sinh</span>
+                            <input name="dateOfBirth" type="date" value={form.dateOfBirth || ""} onChange={handleChange} disabled={!edit} className={edit ? "edit-mode" : ""} />
+                            {formErrors.dateOfBirth && <div className="form-error">{formErrors.dateOfBirth}</div>}
+                        </div>
+                        <div className="upf-info-item">
+                            <span className="upf-label"><Users size={16} /> Giới tính</span>
+                            <select name="gender" value={form.gender || ""} onChange={handleChange} disabled={!edit} className={edit ? "edit-mode" : ""}>
+                                <option value="">Chọn</option>
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                                <option value="other">Khác</option>
+                            </select>
+                        </div>
+                        <div className="upf-info-item">
+                            <span className="upf-label"><Droplets size={16} /> Nhóm máu</span>
+                            {edit ? (
+                                <select name="bloodGroupId" value={form.bloodGroupId || ""} onChange={handleChange} className="edit-mode">
+                                    <option value="">Chọn nhóm máu</option>
+                                    {bloodGroups.map(bg => (
+                                        <option key={bg.id} value={bg.id}>{bg.name}</option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <input value={profile.bloodGroup?.name || ""} disabled />
+                            )}
+                        </div>
+                    </div>
+                    <div className="upf-btn-group">
                         {edit ? (
                             <>
-                                <button type="submit" className="save-btn" disabled={saving}>{saving ? "Đang lưu..." : "Lưu"}</button>
-                                <button type="button" className="cancel-btn" onClick={handleCancel}>Hủy</button>
+                                <button type="submit" className="upf-save-btn" disabled={saving}>{saving ? <Loader size={18} className="spin" /> : <Save size={18} />} Lưu</button>
+                                <button type="button" className="upf-cancel-btn" onClick={handleCancel}><X size={18} /> Hủy</button>
                             </>
                         ) : (
-                            <button type="button" className="edit-btn" onClick={handleEdit}>Chỉnh sửa</button>
+                            <button type="button" className="upf-edit-btn" onClick={handleEdit}><Edit size={18} /> Chỉnh sửa</button>
                         )}
                     </div>
                 </form>
-                {message && <div className={`profile-message ${messageType}`}>{message}</div>}
+                {message && <div className={`upf-message ${messageType}`}>{messageType === "success" ? <CheckCircle size={18} /> : <AlertCircle size={18} />} {message}</div>}
             </div>
         </div>
     );

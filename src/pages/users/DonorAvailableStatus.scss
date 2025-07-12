@@ -1,44 +1,105 @@
-.donor-available-status-container {
-  max-width: 600px;
+.donor-available-status-fancy {
+  max-width: 480px;
   margin: 40px auto;
+  padding: 0 8px;
+}
+.das-card {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-  padding: 32px 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px 0 rgba(183,28,28,0.10), 0 1.5px 8px 0 rgba(0,0,0,0.04);
+  padding: 32px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1);
 }
-.donor-available-status-container h2 {
-  color: #b71c1c;
-  margin-bottom: 24px;
-  text-align: center;
-  font-size: 1.7rem;
-  font-weight: 700;
-}
-.donor-available-status-container ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 16px 0;
-}
-.donor-available-status-container li {
-  margin-bottom: 14px;
-  font-size: 1.1rem;
-  color: #333;
-  background: #f8f8f8;
-  border-radius: 6px;
-  padding: 10px 16px;
+.das-header {
   display: flex;
   align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  justify-content: center;
 }
-.donor-available-status-container li b {
-  min-width: 120px;
+.das-header h2 {
   color: #b71c1c;
-  font-weight: 600;
-  margin-right: 10px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
 }
-.eligible {
+.das-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 18px;
+  margin: 18px 0 8px 0;
+}
+.das-info-item {
+  background: #f8f8f8;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+.das-label {
+  color: #b71c1c;
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.das-value {
+  color: #222;
+  font-size: 1.08rem;
+  font-weight: 500;
+  word-break: break-word;
+}
+.das-eligible {
   color: #388e3c;
+  font-weight: 700;
+  font-size: 1.08rem;
+}
+.das-not-eligible {
+  color: #d32f2f;
+  font-weight: 700;
+  font-size: 1.08rem;
+}
+.das-error {
+  color: #d32f2f;
+  text-align: center;
+  margin-bottom: 12px;
   font-weight: 600;
 }
-.not-eligible {
-  color: #d32f2f;
-  font-weight: 600;
+.das-empty {
+  color: #888;
+  text-align: center;
+  margin: 18px 0 8px 0;
+  font-size: 1.08rem;
+}
+.das-message {
+  text-align: center;
+  color: #b71c1c;
+  font-size: 1.1rem;
+  margin-top: 48px;
+}
+@media (max-width: 600px) {
+  .donor-available-status-fancy {
+    max-width: 100vw;
+    padding: 0 2px;
+  }
+  .das-card {
+    padding: 18px 4vw 16px 4vw;
+  }
+  .das-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px 0;
+  }
+  .das-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }

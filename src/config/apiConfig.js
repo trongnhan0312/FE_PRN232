@@ -78,6 +78,7 @@ export const API_ENDPOINT = {
         CREATE: `${API_BASE_URL}/donoravailability/create`,
         UPDATE: `${API_BASE_URL}/donoravailability/update/{id}`,
         DELETE: `${API_BASE_URL}/donoravailability/delete/{id}`,
+        GET_BY_USERID: `${API_BASE_URL}/donoravailability/getby/`, // + userId
     },
     EMPLOYEE: {
         CREATE: `${API_BASE_URL}/employee/create`,

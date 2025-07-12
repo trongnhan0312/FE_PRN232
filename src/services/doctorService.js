@@ -837,16 +837,10 @@ export const getUserDonationById = async (id) => {
 };
 
 // ---------------- USER - DONOR AVAILABLE (Kiểm tra điều kiện truyền máu) ------------------
-export const getUserDonorAvailable = async (
-    userId,
-    { pageNumber = 1, pageSize = 10 } = {}
-) => {
-    const params = new URLSearchParams();
-    params.append("userId", userId);
-    params.append("pageNumber", pageNumber);
-    params.append("pageSize", pageSize);
+export const getUserDonorAvailable = async (userId) => {
+    if (!userId) throw new Error("userId is required");
     const res = await axios.get(
-        `${API_ENDPOINT.DONOR_AVAILABILITY.ALL}?${params.toString()}`
+        `${API_ENDPOINT.DONOR_AVAILABILITY.GET_BY_USERID}${userId}`
     );
     return res.data.resultObj;
 };
@@ -879,7 +873,10 @@ export const updateUserProfile = async (data) => {
         if (data.gender) formData.append("Gender", data.gender);
         if (data.bloodGroupId)
             formData.append("BloodGroupId", data.bloodGroupId);
-        if (data.avatarFile) formData.append("AvatarUrl", data.avatarFile);
+        if (data.avatarFile || data.avatarUrl) {
+            // Hỗ trợ cả avatarFile (File) hoặc avatarUrl (File)
+            formData.append("AvatarUrl", data.avatarFile || data.avatarUrl);
+        }
         const res = await axios.put(
             API_ENDPOINT.USER.UPDATE_PROFILE,
             formData,

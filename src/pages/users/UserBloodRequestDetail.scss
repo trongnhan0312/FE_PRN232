@@ -1,34 +1,132 @@
-.user-blood-request-detail-container {
-  max-width: 500px;
-  margin: 32px auto;
+.user-blood-request-detail-fancy {
+  max-width: 540px;
+  margin: 40px auto;
+  padding: 0 8px;
+}
+.ubr-card {
   background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(211,47,47,0.10), 0 1.5px 8px 0 rgba(0,0,0,0.04);
+  padding: 32px 28px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1);
+}
+.ubr-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.ubr-blood-icon {
+  background: linear-gradient(135deg, #fff 60%, #fbe9e7 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #fbe9e7;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ubr-main-info {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+}
+.ubr-blood-group {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #d32f2f;
+  letter-spacing: 1px;
+}
+.ubr-amount {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+}
+.ubr-status-badge {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 16px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px #eee;
+  letter-spacing: 0.5px;
+}
+.ubr-emergency {
+  background: #fff3e0;
+  color: #e65100;
+  font-weight: 600;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  padding: 32px 24px;
-  h2 {
-    margin-bottom: 24px;
-    color: #d32f2f;
-    font-size: 1.5rem;
+  padding: 3px 12px;
+  font-size: 0.98rem;
+  margin-left: 4px;
+  box-shadow: 0 1px 4px #ffe0b2;
+}
+.ubr-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+  margin: 18px 0 8px 0;
+}
+.ubr-detail-label {
+  color: #888;
+  font-size: 0.98rem;
+  margin-bottom: 2px;
+}
+.ubr-detail-value {
+  color: #222;
+  font-size: 1.08rem;
+  font-weight: 500;
+  word-break: break-word;
+}
+.ubr-back-btn {
+  margin: 24px auto 0 auto;
+  background: linear-gradient(90deg, #d32f2f 60%, #b71c1c 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 32px 10px 18px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px #fbe9e7;
+  transition: background 0.2s;
+}
+.ubr-back-btn:hover {
+  background: linear-gradient(90deg, #b71c1c 60%, #d32f2f 100%);
+}
+.ubr-loading, .ubr-error {
+  text-align: center;
+  color: #b71c1c;
+  font-size: 1.1rem;
+  margin-top: 48px;
+}
+@media (max-width: 600px) {
+  .user-blood-request-detail-fancy {
+    max-width: 100vw;
+    padding: 0 2px;
   }
-  .detail-row {
-    margin-bottom: 16px;
-    font-size: 1.1rem;
-    b {
-      color: #333;
-      margin-right: 8px;
-    }
+  .ubr-card {
+    padding: 18px 4vw 16px 4vw;
   }
-  button {
-    margin-top: 16px;
-    background: #d32f2f;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    &:hover {
-      background: #b71c1c;
-    }
+  .ubr-details-grid {
+    grid-template-columns: 1fr;
+    gap: 12px 0;
   }
+  .ubr-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }
