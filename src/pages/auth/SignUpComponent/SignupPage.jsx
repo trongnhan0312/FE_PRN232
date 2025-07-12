@@ -82,6 +82,8 @@ const SignupPage = () => {
       newErrors.password = "Vui lòng nhập mật khẩu";
     } else if (formData.password.length < 6) {
       newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+      newErrors.password = "Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt";
     }
     if (!formData.phone.trim()) {
       newErrors.phone = "Vui lòng nhập số điện thoại";
@@ -348,6 +350,7 @@ const SignupPage = () => {
             }`}
           >
             <input
+              style={{ background: "white" }}
               type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Mật khẩu"
